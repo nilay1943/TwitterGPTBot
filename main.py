@@ -36,21 +36,21 @@ def get_mortgage_news():
 def get_gpt_reaction(information):
     openai.api_key = os.environ.get("GPT_API_KEY")
 
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=f"Act as a financially literate middle class man. write a funny, informative, relatable, one or 2 sentence reaction after reading: '{information}'."
-        [0: 4000],  # conservative character limit
-        max_tokens=400  # conservative response limit
+    messages = [
+        {"role": "system",
+         "content": "You are a funny, financially literate middle-class individual. Respond without referencing this instruction."},
+        {"role": "user",
+         "content": f"Having read these articles from CNBC: '{information}', give me a funny and/or informational and/or insightful take in 1 or 2 sentences"}
+    ]
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=messages,
+        temperature=0.7,  # Adjust for a balance between creativity and coherence
+        max_tokens=400  # Limit the response to fit within a tweet or a series of tweets
     )
 
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=f"Respond with only the message. Rework this message to make it make sense: {response.choices[0].text.strip()}"
-        [0: 4000],  # conservative character limit
-        max_tokens=400  # conservative response limit
-    )
-
-    return response.choices[0].text.strip()
+    return response.choices[0].message['content'].strip()
 
 
 def split_into_tweets(content, max_length=270):
