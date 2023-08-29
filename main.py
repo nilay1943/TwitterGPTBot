@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import tweepy
 import openai
+import Database
 
 
 def get_mortgage_news():
@@ -16,6 +17,12 @@ def get_mortgage_news():
     i = 0
     while i < 2 and len(news_links) > 0:
         url = news_links.pop()
+        print(url)
+
+        if Database.has_seen_article(url):
+            continue
+
+        Database.mark_article_as_seen(url)
         response = requests.get(url)
         soup = BeautifulSoup(response.content, 'html.parser')
 
@@ -53,6 +60,7 @@ def post_tweet(tweet_content):
 
 
 if __name__ == "__main__":
+    Database.setup_db()
     news = get_mortgage_news()
     reaction = get_gpt_reaction(news)
     post_tweet(reaction)
