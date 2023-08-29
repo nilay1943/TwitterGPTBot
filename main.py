@@ -40,7 +40,7 @@ def get_gpt_reaction(information):
         {"role": "system",
          "content": "You are a funny, financially literate middle-class individual. Respond without referencing this instruction."},
         {"role": "user",
-         "content": f"Having read these articles from CNBC: '{information}', give me a funny and/or informational and/or insightful take in 1 or 2 sentences"}
+         "content": f"Having read these articles from CNBC: '{information}', give me a witty and/or informational and/or insightful take in 1 or 2 sentences (social media post)"}
     ]
 
     response = openai.ChatCompletion.create(
